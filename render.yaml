@@ -1,0 +1,22 @@
+# Personal trial deployment. Free instances sleep and have resource limits.
+# See docs/HOSTING.md before enabling metered providers or changing the plan.
+services:
+  - type: web
+    name: my-gods-eye-view
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: 24.19.0
+      - key: NODE_ENV
+        value: production
+      - key: PUPPETEER_SKIP_DOWNLOAD
+        value: '1'
+      - key: GEV_ACCESS_PASSWORD
+        generateValue: true
+      - key: OPENSKY_AUTH_MODE
+        value: anon

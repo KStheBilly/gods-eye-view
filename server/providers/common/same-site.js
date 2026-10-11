@@ -1,5 +1,13 @@
 import { admitSameSiteRequest } from '../../../src/localRequestGate.mjs';
 
+// Only the hosted server's authenticated request gate may grant this trust.
+// Request headers cannot create an entry. Local/dev requests retain the exact
+// original proxy rejection policy below.
+const authenticatedHostedRequests = new WeakMap();
+export function markAuthenticatedHostedRequest(req, publicOrigin) {
+  authenticatedHostedRequests.set(req, publicOrigin);
+}
+
 /**
  * Cross-site request gate for cost-bearing and log endpoints. Feeds the
  * request to the pure, unit-tested `admitSameSiteRequest` and answers 403
@@ -13,12 +21,17 @@ import { admitSameSiteRequest } from '../../../src/localRequestGate.mjs';
  * @returns {boolean} True when a 403 was sent.
  */
 export function admitSameSite(req, res) {
+  const hostedOrigin = authenticatedHostedRequests.get(req);
   const verdict = admitSameSiteRequest({
-    hostHeader: req.headers?.host,
-    protocol: req.socket?.encrypted ? 'https:' : 'http:',
+    hostHeader: hostedOrigin ? new URL(hostedOrigin).host : req.headers?.host,
+    protocol: hostedOrigin
+      ? 'https:'
+      : req.socket?.encrypted
+        ? 'https:'
+        : 'http:',
     origin: req.headers?.origin,
     secFetchSite: req.headers?.['sec-fetch-site'],
-    proxyHeaders: req.headers || {},
+    proxyHeaders: hostedOrigin ? {} : req.headers || {},
   });
   if (verdict.ok) return false;
   res.statusCode = verdict.status;

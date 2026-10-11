@@ -1,5 +1,9 @@
 <div align="center">
 
+> **Personal hosted edition:** This copy includes a private login and a persistent
+> Node server for a private PC link or cloud hosting. See [the hosting and provider setup guide](docs/HOSTING.md).
+> All original feature code and attribution are retained; provider keys are not included.
+
 # 🌐 God's Eye View
 
 [![CI](https://github.com/bilawalsidhu/gods-eye-view/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/bilawalsidhu/gods-eye-view/actions/workflows/ci.yml) [![Reached #1 on GitHub Trending](https://img.shields.io/badge/%231_GitHub_Trending-thank_you!-F0A63C?style=flat-square&logo=github)](https://x.com/bilawalsidhu/status/2093798887815348521)
